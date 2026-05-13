@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/weights:/app/weights
+    networks:
+      - wheatguard-network
+
+  frontend:
+    build: ./wheatguard-ai
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - wheatguard-network
+
+networks:
+  wheatguard-network:
+    driver: bridge
