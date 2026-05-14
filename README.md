@@ -1,16 +1,14 @@
 # WheatGuard AI 🌱
 
-Sistema avanzado de diagnóstico agrícola basado en Inteligencia Artificial. WheatGuard está diseñado para la segmentación precisa y el cálculo automático de la severidad de enfermedades foliares en cultivos de trigo, optimizado para operar con imágenes capturadas "in the wild" (entornos de campo real).
+Sistema avanzado de diagnóstico agrícola basado en Inteligencia Artificial. WheatGuard utiliza una arquitectura híbrida U-Net con encoder MiT-B3 para la segmentación precisa y el cálculo automático de la severidad de enfermedades foliares en cultivos de trigo, optimizado para operar con imágenes capturadas "in the wild" (entornos de campo real).
 
 ---
 
-## 🧠 Modelos de IA Integrados
+## 🧠 Modelo de IA Integrado
 
-El motor de inferencia soporta múltiples arquitecturas de segmentación semántica de última generación para adaptarse a diferentes necesidades de precisión y rendimiento:
+El motor de inferencia utiliza una arquitectura híbrida de segmentación semántica de última generación:
 
-- **Híbrido (U-Net mit-b3):** Balance ideal entre contexto global y detalles finos.
-- **SegFormer (mit-b2):** Arquitectura basada en Transformers optimizada para alta precisión semántica.
-- **DINOv2 (Small):** Utiliza características auto-supervisadas de visión para una excelente generalización en entornos complejos.
+- **Híbrido (U-Net mit-b3):** Arquitectura U-Net con encoder MiT-B3 que proporciona un balance ideal entre contexto global y detalles finos, optimizada para la detección precisa de enfermedades foliares en trigo.
 
 ---
 
@@ -40,7 +38,7 @@ El proyecto está separado en dos servicios principales completamente dockerizad
 - Python 3.11
 - FastAPI
 - PyTorch
-- HuggingFace Transformers
+- Segmentation Models PyTorch
 - OpenCV
 - Albumentations
 
@@ -120,15 +118,8 @@ pip install -r requirements.txt
 python main.py
 ```
 
-> ⚠️ **Nota sobre HuggingFace:**  
-> En el archivo `main.py` están configuradas las variables:
->
-> ```python
-> TRANSFORMERS_OFFLINE="1"
-> HF_HUB_OFFLINE="1"
-> ```
->
-> Si es la primera vez que ejecutas el proyecto en tu entorno local y no tienes las arquitecturas base cacheadas (ej. `nvidia/mit-b2`), debes comentar o eliminar esas líneas temporalmente para que la librería pueda descargar la estructura.
+> ⚠️ **Nota sobre Dependencias:**  
+> El proyecto utiliza `segmentation_models_pytorch` para la arquitectura híbrida U-Net con encoder MiT-B3. Asegúrate de tener instaladas todas las dependencias del archivo `requirements.txt`.
 
 ---
 
@@ -165,7 +156,7 @@ El flujo de procesamiento de imágenes incluye:
    Se utiliza OpenCV (Aperturas, análisis de componentes conexos) para eliminar ruido digital y asegurar que las enfermedades solo se marquen dentro del área foliar detectada.
 
 3. **Cálculo de Severidad:**  
-   Basado en el mIoU, se calcula la proporción exacta de píxeles enfermos en relación con los píxeles totales de la hoja sana encontrada.
+   Basado en el mIoU (0.794), se calcula la proporción exacta de píxeles enfermos en relación con los píxeles totales de la hoja sana encontrada.
 
 ---
 
