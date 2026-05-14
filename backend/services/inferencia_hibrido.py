@@ -14,19 +14,19 @@ print(f"🚀 Cargando Híbrido U-Net mit_b3 con Refinamiento en {device}...")
 
 # Inicialización del modelo
 modelo = smp.Unet(encoder_name="mit_b3", encoder_weights=None, in_channels=3, classes=5).to(device)
-modelo.load_state_dict(torch.load('weights/mejor_modelo_roya_hibrido.pth', map_location=device))
+modelo.load_state_dict(torch.load('weights/mejor_modelo_roya.pth', map_location=device))
 modelo.eval()
 
-transformacion = A.Compose([A.Resize(height=640, width=640), ToTensorV2()])
+transformacion = A.Compose([A.Resize(height=672, width=672), ToTensorV2()])
 
 def refinar_mascaras(probs_np):
     """
     Aplica: Umbrales Dinámicos, Filtrado Lógico, Morfología y Área Mínima.
     probs_np: array de forma (5, H, W)
     """
-    # 1. Configuración de Umbrales (Basado en el análisis de la Época 83)
+    # 1. Configuración de Umbrales (Basado en SegFormer mit-b2 que daba buenos resultados)
     # [Hoja, Mildew, Septoria, Roya_Hoja, Roya_Amarilla]
-    umbrales = [0.50, 0.25, 0.40, 0.60, 0.68]
+    umbrales = [0.50, 0.25, 0.40, 0.55, 0.60]
     n_clases = probs_np.shape[0]
     
     mascaras_binarias = []
@@ -141,7 +141,7 @@ def procesar(image_bytes: bytes) -> dict:
     return {
         "pathologies": patologias,
         "overall_severity_pct": overall_severity_pct,
-        "miou": 0.764, 
+        "miou": 0.794, 
         "maskUrl": f"data:image/png;base64,{mask_base64}",
         "modeloUsado": "hibrido_mit_b3_refined"
     }

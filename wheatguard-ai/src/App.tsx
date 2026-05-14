@@ -21,9 +21,6 @@ export default function App() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<DiagnosisResult | null>(null);
-  
-  // NUEVO: Estado para el selector de modelos
-  const [modeloSeleccionado, setModeloSeleccionado] = useState<string>('segformer');
 
   useEffect(() => {
     if (!file) {
@@ -39,7 +36,7 @@ export default function App() {
   const procesarImagen = async (file: File): Promise<DiagnosisResult> => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("modelo_seleccionado", modeloSeleccionado); 
+    formData.append("modelo_seleccionado", "hibrido");
 
     const response = await fetch("http://localhost:8000/api/diagnosticar", {
       method: "POST",
@@ -137,44 +134,6 @@ export default function App() {
                   onFileSelect={setFile} 
                   previewUrl={previewUrl} 
                 />
-
-                {/* NUEVO: Selector de Modelos UI */}
-                {/* Selector de Modelos UI (Ahora con 3 opciones) */}
-                <div className="flex justify-center mb-4 w-full max-w-lg mx-auto">
-                  <div className="bg-slate-50 p-1.5 rounded-2xl border border-slate-200 flex w-full shadow-inner">
-                    <button
-                      onClick={() => setModeloSeleccionado("segformer")}
-                      className={`flex-1 py-2.5 px-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                        modeloSeleccionado === "segformer" 
-                          ? "bg-white text-wheat shadow-sm ring-1 ring-slate-100" 
-                          : "text-slate-400 hover:text-slate-600"
-                      }`}
-                    >
-                      Híbrido U-Net
-                    </button>
-                    <button
-                      onClick={() => setModeloSeleccionado("hibrido")}
-                      className={`flex-1 py-2.5 px-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                        modeloSeleccionado === "hibrido" 
-                          ? "bg-white text-wheat shadow-sm ring-1 ring-slate-100" 
-                          : "text-slate-400 hover:text-slate-600"
-                      }`}
-                    >
-                      Segformer
-                    </button>
-                    {/* EL TERCER BOTÓN */}
-                    <button
-                      onClick={() => setModeloSeleccionado("dinov2")}
-                      className={`flex-1 py-2.5 px-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                        modeloSeleccionado === "dinov2" 
-                          ? "bg-white text-wheat shadow-sm ring-1 ring-slate-100" 
-                          : "text-slate-400 hover:text-slate-600"
-                      }`}
-                    >
-                      Dinov2
-                    </button>
-                  </div>
-                </div>
 
                 <div className="flex justify-center">
                   <button

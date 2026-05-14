@@ -5,10 +5,8 @@ from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-# Importamos los TRES motores de inferencia
-from services.inferencia_segformer import procesar as procesar_segformer
+# Importamos el motor de inferencia principal
 from services.inferencia_hibrido import procesar as procesar_hibrido
-from services.inferencia_dinov2 import procesar as procesar_dinov2  # NUEVO
 
 app = FastAPI(title="WheatGuard AI API")
 
@@ -23,18 +21,13 @@ app.add_middleware(
 @app.post("/api/diagnosticar")
 async def diagnosticar_imagen(
     file: UploadFile = File(...), 
-    modelo_seleccionado: str = Form("segformer") 
+    modelo_seleccionado: str = Form("hibrido") 
 ):
     # Extraemos los bytes
     image_bytes = await file.read()
     
-    # Enrutamos al modelo correcto
-    if modelo_seleccionado == "hibrido":
-        return procesar_hibrido(image_bytes)
-    elif modelo_seleccionado == "dinov2": # Usamos la llave 'dinov2' que viene del Frontend
-        return procesar_dinov2(image_bytes)
-    else:
-        return procesar_segformer(image_bytes)
+    # Usamos siempre el modelo híbrido
+    return procesar_hibrido(image_bytes)
 
 if __name__ == "__main__":
     print("🚀 Servidor enrutador listo...")

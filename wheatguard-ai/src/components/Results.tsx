@@ -17,12 +17,10 @@ interface ResultsProps {
 
 export default function Results({ originalImage, result, onReset }: ResultsProps) {
   const nombresModelos: Record<string, string> = {
-    segformer: 'SegFormer Clásico',
-    hibrido: 'Híbrido',
-    deeplab: 'dinov2'
+    hibrido: 'Híbrido'
   };
   
-  const nombreModeloFormateado = result.modeloUsado ? nombresModelos[result.modeloUsado] : 'Modelo IA';
+  const nombreModeloFormateado = result.modeloUsado ? nombresModelos[result.modeloUsado] ?? 'Modelo IA' : 'Modelo IA';
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full space-y-6">
